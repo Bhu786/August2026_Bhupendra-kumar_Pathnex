@@ -21,4 +21,4 @@
 ![](./images/imagecopy22.png)
 ![](./images/imagecopy23.png)
 ![](./images/imagecopy25.png)
-<!-- ![](./images/imagecopy26.png) -->
+![](./images/imagecopy26.png)
