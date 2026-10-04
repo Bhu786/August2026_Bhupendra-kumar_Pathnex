@@ -1,0 +1,89 @@
+pipeline {
+
+    agent any
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                // default source deya 
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            // build bnaya 
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+
+        stage('Test') {
+            // testing 
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage('Package') {
+            // making a packege
+            steps {
+                sh 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Upload Artifact to JFrog') {
+            // upload to any registry 
+            steps {
+                sh '''
+                    mvn deploy \
+                    -DaltDeploymentRepository=repo::default::https://jfrog.example.com/artifactory/my-repo/
+                '''
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                sh '''
+                    docker build -t myapp:${BUILD_NUMBER} .
+                '''
+            }
+        }
+
+        stage('Login to AWS ECR') {
+            steps {
+                sh '''
+                    aws ecr get-login-password --region ap-south-1 |
+                    docker login --username AWS --password-stdin \
+                    123456789012.dkr.ecr.ap-south-1.amazonaws.com
+                '''
+            }
+        }
+
+        stage('Push Image to ECR') {
+            steps {
+                sh '''
+                    docker tag myapp:${BUILD_NUMBER} \
+                    123456789012.dkr.ecr.ap-south-1.amazonaws.com/myapp:${BUILD_NUMBER}
+
+                    docker push \
+                    123456789012.dkr.ecr.ap-south-1.amazonaws.com/myapp:${BUILD_NUMBER}
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'CI/CD pipeline completed successfully'
+        }
+
+        failure {
+            echo 'CI/CD pipeline failed'
+        }
+
+        always {
+            echo 'Pipeline execution completed'
+        }
+    }
+}
