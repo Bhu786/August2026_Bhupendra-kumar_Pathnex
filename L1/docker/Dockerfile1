@@ -1,0 +1,27 @@
+# FOR SPING BOOT PROJECT 
+# imagine there is file for frontend and backend 
+
+project/
+├── frontend/
+│   ├── ...
+│   └── package.json
+│
+└── backend/
+    └── target/
+        └── app.jar
+
+// base image done 
+FROM eclipse-temurin:17-jre   
+// directiry de deya for container
+WORKDIR /app    
+
+// local se image me file copy kar deya 
+COPY frontend/  /app/frontend
+
+// backend se contianer path par bhej raha hai 
+COPY backend/target/app.jar   /app/app.jar 
+
+// when contianer run then this cmd surely
+ENTRYPOINT ["java", "-jar", "/app/backend/app.jar"]
+  // application excepted port yehi run karega
+EXPOSE 3000
