@@ -1,0 +1,36 @@
+pipeline{
+    agent any 
+
+    stages{
+        // what we need in stages 
+        // checkout=> sast=> sca=> secrity scan==> built => test=> create =-> deploy to registry
+        // only till ci i want complete the code for ci and cd
+        // i used sast => sonarqube 
+        // sca => snyk
+        // secret scan => gitleaks or trivy 
+        // image scan => trivy
+        // to image aws ecr
+        // governance => snyk of comapny 
+        // pre installed 
+        // environment prod , qa,dev, pre prod 
+        // is any thing only till ci things 
+
+
+      // step 1   
+        stage("checkout"){
+            sh "checkout scm"
+        }
+        // step 2
+        // i wnat to know this sterp only how its work form its gets gitleaks how 
+        // where its send if any issues comes complete deep drive into 
+        // only this 
+
+        
+        stage("security scan"){
+         sh    "gitleaks detect --source . --redact"
+
+            
+        }
+
+    }
+}
